@@ -1,8 +1,8 @@
-import os
+import sqlite3
+conn = sqlite3.connect('db.db')
+cursor = conn.cursor()
+cursor.execute("SELECT chat_id FROM user")
+results = cursor.fetchall()
 
-from dotenv import load_dotenv
-env = os.path.join(os.path.dirname(".env"), '.env')
-if os.path.exists(env):
-    load_dotenv(env)
+print(results[0][0])
 
-print(env)

@@ -13,14 +13,14 @@ from dotenv import dotenv_values
 #    load_dotenv(env)
 
 env = {
-    **dotenv_values(r"C:\Users\PBS\Desktop\Рабочий стол\Старый ноут\Obsidian Files\Obsidian moe\Работа\ChatGPT\ChatGPT_telegram_bot-main/.env"),
+    **dotenv_values(r"C:\Users\Дима\Documents\GitHub\chatgpt_telegram_bot\.env"),
     **dotenv_values(".env.dev"),  # override
 }
-
+print(env)
 CHECK_KEY = "check_key_lskJHjf32"
 
 API_KEYS_CHATGPT = [
-    env["API_KEY_CHATGPT"]
+    env['API_KEY_CHATGPT']
 
 ]
 bot = telebot.TeleBot(env["TG_BOT_TOKEN"])
@@ -49,7 +49,11 @@ def write_to_db(message):
             conn.commit()
             conn.close()
             bot.send_message(
-                612063160,
+                454025767,
+                f"Ошибка при добавлении (INSERT) данных в базе Пользователь: {message.chat.id}",
+            )
+            bot.send_message(
+                947873265,
                 f"Ошибка при добавлении (INSERT) данных в базе Пользователь: {message.chat.id}",
             )
     else:
@@ -71,7 +75,11 @@ def write_to_db(message):
             conn.commit()
             conn.close()
             bot.send_message(
-                612063160,
+                454025767,
+                f"Ошибка при добавлении (INSERT) данных в базе Пользователь: {message.chat.id}",
+            )
+            bot.send_message(
+                947873265,
                 f"Ошибка при добавлении (INSERT) данных в базе Пользователь: {message.chat.id}",
             )
     conn.commit()
@@ -169,6 +177,15 @@ def send_start(message):
     write_to_db(message)
     bot.send_message(message.chat.id, text)
 
+@bot.message_handler(commands=["send"])
+def send_message(message):
+    conn = sqlite3.connect('db.db')
+    cursor = conn.cursor()
+    bot.send_message(message.chat.id, "Пришлите одним сообщением что зарекламить")
+    cursor.execute("SELECT chat_id FROM user")
+    results = cursor.fetchall()
+    for i in results:
+        print(i[0])
 
 def check_key(message):
     key = message.text[19:]
